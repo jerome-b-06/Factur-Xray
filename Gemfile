@@ -61,6 +61,7 @@ group :development, :test do
   # Devise for authentication
   gem "devise"
 
+  gem "i18n"
 end
 
 group :development do
