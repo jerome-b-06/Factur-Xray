@@ -64,6 +64,12 @@ group :development, :test do
   gem "i18n"
 end
 
+group :test do
+  # Use Capybara for end-to-end testing
+  gem "capybara"
+  gem "selenium-webdriver"
+end
+
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
