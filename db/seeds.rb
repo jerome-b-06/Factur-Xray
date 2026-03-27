@@ -12,22 +12,22 @@ User.create!(email: "example@example.com", password: "1234567")
 
 Company.destroy_all
 10.times.each do |i|
-  company = Company.find_or_create_by!(name: "Company #{i}")
+  company = Company.find_or_create_by!(name: "Company #{i}", siret: 12345, siren: 6789098, vat_number: "FR-421356765432")
 
   invoice_nb = rand(1..50)
   invoices_sample = Array.new(invoice_nb).map do |f|
     issue_date = Date.today - rand(0..100).days
     due_date = issue_date + 30.days
-    vat_amount = 20.0
+    vat_rate = 20.0
     total_ht = rand(100..50000) / 100.0
-    total_ttc = total_ht * (1 + vat_amount / 100.0)
+    total_ttc = total_ht * (1 + vat_rate / 100.0)
     {
       number: SecureRandom.uuid,
       issue_date: issue_date,
       due_date: due_date,
       total_ht: total_ht,
       total_ttc: total_ttc,
-      vat_amount: vat_amount,
+      vat_rate: vat_rate,
       currency: "EUR"
     }
   end

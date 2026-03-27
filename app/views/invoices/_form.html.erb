@@ -1,0 +1,52 @@
+<%= form_with(model: [@company, @invoice], class: "contents") do |form| %>
+  <% if @invoice.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+      <h2><%= pluralize(@invoice.errors.count, "error") %> prohibited this invoice from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% @invoice.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :status %>
+    <%= form.text_field :status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:status].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:status].any? }] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :number %>
+    <%= form.text_field :number, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:number].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:number].any? }] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :issue_date %>
+    <%= form.date_field :issue_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:issue_date].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:issue_date].any? }] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :due_date %>
+    <%= form.date_field :due_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:due_date].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:due_date].any? }] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :total_ht %>
+    <%= form.text_field :total_ht, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:total_ht].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:total_ht].any? }] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :vat_rate %>
+    <%= form.text_field :vat_rate, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:vat_rate].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:vat_rate].any? }] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :currency %>
+    <%= form.text_field :currency, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:currency].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:currency].any? }] %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit "Save", class: "btn btn-primary" %>
+  </div>
+<% end %>

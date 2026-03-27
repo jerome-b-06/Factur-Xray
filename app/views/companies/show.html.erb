@@ -1,0 +1,115 @@
+<div class="min-h-screen bg-base-200 flex justify-center py-10">
+
+  <div class="w-full max-w-6xl px-4 space-y-8">
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+    <% end %>
+
+    <div class="text-xs breadcrumbs opacity-50 px-2">
+      <ul>
+        <li><%= link_to "Sociétés", companies_path %></li>
+        <li><%= @company.name %></li>
+      </ul>
+    </div>
+
+    <div class="card bg-base-100 shadow-sm rounded-md border border-base-300">
+      <div class="card-body p-10">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+          <div class="text-center md:text-left">
+            <h1 class="text-4xl font-bold uppercase tracking-tight text-base-content">
+              <%= @company.name %>
+            </h1>
+            <div class="flex flex-col gap-1 mt-4 text-sm opacity-60">
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                SIRET : <%= @company.siret %>
+              </div>
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                VAT N° : <%= @company.vat_number %>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <%= link_to "Éditer", edit_company_path(@company), class: "btn btn-outline rounded" %>
+            <%= link_to new_company_invoice_path(@company), class: "btn btn-primary rounded" do %>
+              + New Invoice
+            <% end %>
+          </div>
+        </div>
+
+        <div class="stats stats-vertical lg:stats-horizontal bg-base-200 border border-base-300 w-full mt-10 rounded">
+          <div class="stat">
+            <div class="stat-title text-xs uppercase font-bold">Total Facturé</div>
+            <div class="stat-value text-primary "><%= number_to_currency(@invoices.sum(:total_ttc), unit: "€") %></div>
+            <div class="stat-desc font-semibold"><%= @invoices.count %> documents</div>
+          </div>
+
+          <!--          <div class="stat border-l border-base-300">-->
+          <!--            <div class="stat-title text-xs uppercase font-bold">Moyenne Panier</div>-->
+          <!--            <div class="stat-value text-base-content/80 "><%#= number_to_currency(@invoices.average(:total_ttc) || 0, unit: "€") %></div>-->
+          <!--          </div>-->
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-base-100 shadow-sm rounded-md border border-base-300 overflow-hidden">
+      <div class="p-6 border-b border-base-200 bg-base-100/50 flex justify-between items-center">
+        <h2 class="font-bold uppercase tracking-widest text-sm">Registre des factures</h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="table table-lg w-full">
+          <thead>
+          <tr class="text-base-content/50 border-b border-base-300">
+            <th class="bg-transparent font-bold hidden md:table-cell">INVOICE NUMBER</th>
+            <th class="bg-transparent font-bold">DATE</th>
+            <th class="bg-transparent font-bold text-right">HT</th>
+            <th class="bg-transparent font-bold text-right">TTC</th>
+            <th class="bg-transparent font-bold text-center">ACTIONS</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-base-200">
+          <% @invoices.each do |invoice| %>
+            <tr id="invoice_<%= invoice.id %>" class="hover:bg-base-200/40 transition-colors text-nowrap">
+              <td class="font-bold text-primary hidden md:table-cell">
+                <%= invoice.number %>
+              </td>
+              <td class="text-sm">
+                <%= l invoice.issue_date %>
+              </td>
+              <td class="text-right opacity-70">
+                <%= number_to_currency invoice.total_ht %>
+              </td>
+              <td class="text-right font-bold text-lg">
+                <%= number_to_currency invoice.total_ttc %>
+              </td>
+              <td class="flex justify-center gap-1">
+                <%# Routes nestées corrigées %>
+                <%= link_to company_invoice_path(@company, invoice), class: "btn btn-ghost" do %>
+                  Voir
+                <% end %>
+                <%= link_to edit_company_invoice_path(@company, invoice), class: "btn btn-ghost text-info" do %>
+                  Éditer
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+
+        <% if @invoices.none? %>
+          <div class="p-20 text-center opacity-40 italic">
+            Aucun document financier trouvé.
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>
