@@ -62,12 +62,16 @@ group :development, :test do
   gem "devise"
 
   gem "i18n"
+
+  # generate PDF from html
+  gem "ferrum"
 end
 
 group :test do
   # Use Capybara for end-to-end testing
   gem "capybara"
   gem "selenium-webdriver"
+  gem "pdf-reader"
 end
 
 group :development do
