@@ -1,0 +1,10 @@
+<div class="flex gap-4 mb-2">
+  <%= item_form.text_field :description, placeholder: "Description", class: "input" %>
+  <%= item_form.number_field :quantity, min: 0, step: :any, placeholder: "Qty", class: "input w-20" %>
+  <%= item_form.number_field :unit_price, min: 0, step: :any, placeholder: "Price", class: "input w-32" %>
+  <%= item_form.number_field :vat_rate, min: 0, max: 100, step: :any, placeholder: "VAT %", class: "input w-20" %>
+
+  <% if item_form.object.persisted? %>
+    <%= item_form.check_box :_destroy %> Remove
+  <% end %>
+</div>

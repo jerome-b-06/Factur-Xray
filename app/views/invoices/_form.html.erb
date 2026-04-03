@@ -31,20 +31,20 @@
     <%= form.date_field :due_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:due_date].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:due_date].any? }] %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :total_ht %>
-    <%= form.text_field :total_ht, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:total_ht].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:total_ht].any? }] %>
+  <h2>Items</h2>
+
+  <div id="invoice_items">
+    <%= form.fields_for :invoice_items do |item_form| %>
+      <%= render "invoice_item_fields", item_form: item_form %>
+    <% end %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :vat_rate %>
-    <%= form.text_field :vat_rate, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:vat_rate].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:vat_rate].any? }] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :currency %>
-    <%= form.text_field :currency, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:currency].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:currency].any? }] %>
-  </div>
+  <% add_item_path = @invoice.persisted? ? add_item_company_invoice_path(@company, @invoice) : add_item_company_invoices_path(@company) %>
+  <%= form.submit "Add a new item",
+                  formaction: add_item_path,
+                  formmethod: :post,
+                  data: { turbo_frame: "_top" },
+                  class: "btn btn-outline" %>
 
   <div class="inline">
     <%= form.submit "Save", class: "btn btn-primary" %>

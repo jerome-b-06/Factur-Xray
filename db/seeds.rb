@@ -12,23 +12,36 @@ User.create!(email: "example@example.com", password: "1234567")
 
 Company.destroy_all
 10.times.each do |i|
-  company = Company.find_or_create_by!(name: "Company #{i}", siret: 12345, siren: 6789098, vat_number: "FR-421356765432")
+  company = Company.find_or_create_by!(
+    name: "Company #{i}",
+    siret: "#{i}12345",
+    siren: "#{i}6789098",
+    vat_number: "FR-#{i}421356765432",
+    invoice_template: '<h1>{{company_name}}</h1>
+                       <small>VAT N° {{company_vat_number}}</small>
+                       <h2 style="margin-top:10px;">Invoice N° {{number}}</h2>
+                       <div style="margin-top:10px;">Issue date: {{issue_date}}</div>
+                       <div>Please remit until: {{due_date}}</div>
+                       <br><br>
+                       {{list_of_invoiced_items}}
+                       <div style="margin-top:10px;">Total HT: {{total_ht}}</div>
+                       <div style="margin-top:10px;">VAT amount: {{total_vat}}</div>
+                       <div style="margin-top:10px;">Total TTC: {{total_ttc}}</div>'
+  )
 
   invoice_nb = rand(1..50)
   invoices_sample = Array.new(invoice_nb).map do |f|
     issue_date = Date.today - rand(0..100).days
     due_date = issue_date + 30.days
-    vat_rate = 20.0
-    total_ht = rand(100..50000) / 100.0
-    total_ttc = total_ht * (1 + vat_rate / 100.0)
     {
       number: SecureRandom.uuid,
       issue_date: issue_date,
       due_date: due_date,
-      total_ht: total_ht,
-      total_ttc: total_ttc,
-      vat_rate: vat_rate,
-      currency: "EUR"
+      invoice_items_attributes: [
+        { description: "Produit_1", quantity: 15, unit_price: 100.0, vat_rate: 20.0 },
+        { description: "Produit_2", quantity: 3, unit_price: 10.0, vat_rate: 20.0 },
+        { description: "Produit_3", quantity: 15.8, unit_price: 1000.0, vat_rate: 20.0 }
+      ]
     }
   end
 

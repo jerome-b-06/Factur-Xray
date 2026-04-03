@@ -5,12 +5,21 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <h1 class="font-bold text-4xl">Showing invoice</h1>
+  <div class="text-xs breadcrumbs opacity-50 px-2">
+    <ul>
+      <li><%= link_to "Sociétés", companies_path %></li>
+      <li><%= link_to @company.name, company_path(@company) %></li>
+      <li>Invoice N° <%= @invoice.number %></li>
+    </ul>
+  </div>
+
+  <%= link_to "Back to invoices", company_path(@company), class: "btn btn-secondary" %>
+
+  <h1 class="font-bold text-4xl py-2">Showing invoice</h1>
 
   <%= render @invoice %>
 
   <%= link_to "Edit this invoice", edit_company_invoice_path(@company, @invoice), class: "btn btn-primary" %>
-  <%= link_to "Back to invoices", company_path(@company), class: "btn btn-secondary" %>
   <%= button_to company_invoice_path(@company, @invoice),
                 method: :delete,
                 form_class: "inline-block",

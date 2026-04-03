@@ -46,8 +46,8 @@
         <div class="stats stats-vertical lg:stats-horizontal bg-base-200 border border-base-300 w-full mt-10 rounded">
           <div class="stat">
             <div class="stat-title text-xs uppercase font-bold">Total Facturé</div>
-            <div class="stat-value text-primary "><%= number_to_currency(@invoices.sum(:total_ttc), unit: "€") %></div>
-            <div class="stat-desc font-semibold"><%= @invoices.count %> documents</div>
+            <div class="stat-value text-primary "><%= number_to_currency(@company.total_invoiced, unit: "€") %></div>
+            <div class="stat-desc font-semibold"><%= @company.invoices_count %> documents</div>
           </div>
 
           <!--          <div class="stat border-l border-base-300">-->
@@ -90,12 +90,22 @@
                 <%= number_to_currency invoice.total_ttc %>
               </td>
               <td class="flex justify-center gap-1">
-                <%# Routes nestées corrigées %>
                 <%= link_to company_invoice_path(@company, invoice), class: "btn btn-ghost" do %>
-                  Voir
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
                 <% end %>
                 <%= link_to edit_company_invoice_path(@company, invoice), class: "btn btn-ghost text-info" do %>
-                  Éditer
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                <% end %>
+
+                <% if invoice.pdf_invoice.attached? %>
+                  <%= link_to rails_blob_path(invoice.pdf_invoice, disposition: "attachment"), class: "btn btn-ghost text-info" do %>
+                    PDF
+                  <% end %>
                 <% end %>
               </td>
             </tr>

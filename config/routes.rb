@@ -1,9 +1,20 @@
 Rails.application.routes.draw do
+  resources :invoice_items
 
   devise_for :users
   resources :companies do
-    resources :invoices
+    # resources :invoices
+    resources :invoices do
+      collection do
+        post :add_item # Pour /invoices/add_item (New)
+      end
+
+      member do
+        post :add_item # Pour /invoices/:id/add_item (Edit)
+      end
+    end
   end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

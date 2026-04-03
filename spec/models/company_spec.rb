@@ -5,19 +5,15 @@ RSpec.describe Company, type: :model do
     { status: "pending",
       number: "AA-123456",
       issue_date: Date.yesterday,
-      due_date: Date.yesterday + 1.month,
-      total_ht: 100.0,
-      vat_rate: 20.00,
-      currency: "EUR" }
+      due_date: Date.yesterday + 1.month
+    }
   }
   let(:valid_invoice_2_attributes) {
     { status: "pending",
       number: "AA-12345678",
       issue_date: Date.yesterday,
-      due_date: Date.yesterday + 1.month,
-      total_ht: 100.0,
-      vat_rate: 20.00,
-      currency: "EUR" }
+      due_date: Date.yesterday + 1.month
+    }
   }
   let(:valid_attributes) {
     { name: "CompanyTest", siret: 123456, siren: 123, vat_number: "FR123456789" }

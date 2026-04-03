@@ -1,0 +1,37 @@
+<%= form_with(model: company, class: "contents") do |form| %>
+  <% if company.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+      <h2><%= pluralize(company.errors.count, "error") %> prohibited this company from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% company.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-control w-full mb-4" data-controller="trix-variables">
+    <div class="label font-bold text-sm opacity-70">Variables magiques (cliquez pour insérer) :</div>
+    <div class="flex flex-wrap gap-2 mb-3">
+      <% [["Numéro", "number"], ["Date", "date"], ["Total TTC", "total_ttc"], ["Nom Client", "client_name"]].each do |label, var| %>
+        <button type="button"
+                class="badge badge-outline badge-primary hover:badge-active cursor-pointer p-3"
+                data-action="trix-variables#insert"
+                data-variable="<%= var %>">
+          + <%= label %>
+        </button>
+      <% end %>
+    </div>
+
+    <%= form.label :invoice_template, "Invoice template", class: "label font-bold" %>
+    <div class="bg-white text-black p-2 rounded-lg border border-base-300">
+      <%= form.rich_text_area :invoice_template, data: { trix_variables_target: "editor" },
+                              class: "trix-content prose max-w-none focus:outline-none min-h-[300px] border-none" %>
+    </div>
+  </div>
+
+  <div class="inline">
+    <%= form.submit "Save", class: "btn btn-primary" %>
+  </div>
+<% end %>

@@ -9,7 +9,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1 or /companies/1.json
   def show
-    @invoices = @company.invoices.order(created_at: :desc)
+    @invoices = @company.invoices.includes(:invoice_items).order(created_at: :desc)
   end
 
   # GET /companies/new
@@ -57,6 +57,6 @@ class CompaniesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def company_params
-    params.expect(company: [:name, :siret, :siren, :vat_number])
+    params.expect(company: [ :name, :siret, :siren, :vat_number, :invoice_template ])
   end
 end

@@ -1,10 +1,15 @@
 <% content_for :title, "Editing company" %>
 
-<div class="md:w-2/3 w-full">
+<div class="w-full">
   <h1 class="font-bold text-4xl">Editing company</h1>
+  <% if params[:edit_template] == "true" %>
+    <%= render "invoice_template_form", company: @company %>
+  <% else %>
+    <%= render "form", company: @company %>
+    <%= link_to "Edit invoice template", { action: :edit, edit_template: "true" }, class: "btn btn-primary" %>
 
-  <%= render "form", company: @company %>
+  <% end %>
 
-  <%= link_to "Show this company", @company, class: "btn btn-primary" %>
+
   <%= link_to "Back to companies", companies_path, class: "btn btn-secondary" %>
 </div>

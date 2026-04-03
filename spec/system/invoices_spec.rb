@@ -12,8 +12,22 @@ RSpec.describe "Invoices", type: :system do
   describe "Listing invoices" do
     it "displays the invoice list on the company show page" do
       company.invoices.create!([
-                                 { number: "INVOICE-1", total_ht: 100, vat_rate: 20, issue_date: Date.today, due_date: Date.tomorrow },
-                                 { number: "INVOICE-2", total_ht: 300, vat_rate: 20, issue_date: Date.today, due_date: Date.tomorrow }
+                                 { number: "INVOICE-1",
+                                   issue_date: Date.today,
+                                   due_date: Date.tomorrow,
+                                   invoice_items_attributes: [
+                                     { description: "Produit_1", quantity: 1, unit_price: 100.0, vat_rate: 20.0 },
+                                     { description: "Produit_2", quantity: 10, unit_price: 10.0, vat_rate: 20.0 }
+                                   ]
+                                 },
+                                 { number: "INVOICE-2",
+                                   issue_date: Date.today,
+                                   due_date: Date.tomorrow,
+                                   invoice_items_attributes: [
+                                     { description: "Produit_1", quantity: 1, unit_price: 100.0, vat_rate: 20.0 },
+                                     { description: "Produit_2", quantity: 10, unit_price: 10.0, vat_rate: 20.0 }
+                                   ]
+                                 }
                                ])
 
       visit company_path(company)
@@ -36,9 +50,6 @@ RSpec.describe "Invoices", type: :system do
       fill_in "Number", with: "INV-001"
       fill_in "Issue date", with: Date.today
       fill_in "Due date", with: Date.tomorrow + 1.month
-      fill_in "Total ht", with: 1000.00
-      fill_in "Vat rate", with: 20.00
-      fill_in "Currency", with: "EUR"
 
       click_on "Save"
 
@@ -52,7 +63,7 @@ RSpec.describe "Invoices", type: :system do
     it "updates the TTC when HT amount is changed" do
       visit company_path(company)
       within("#invoice_#{invoice.id}") do
-        click_on "Éditer"
+        click_on "Edit"
       end
 
       fill_in "Total ht", with: 200.00

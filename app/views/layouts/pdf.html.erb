@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <style>
+      /* Styles spécifiques pour l'impression */
+      @media print {
+          .no-print {
+              display: none;
+          }
+      }
+  </style>
+</head>
+
+<body>
+<main class="bg-white text-black p-10">
+  <%= yield %>
+</main>
+</body>
+</html>
