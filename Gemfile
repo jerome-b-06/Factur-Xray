@@ -65,6 +65,9 @@ group :development, :test do
 
   # generate PDF from html
   gem "ferrum"
+
+  # Factur-X PDF generation
+  gem "hexapdf"
 end
 
 group :test do

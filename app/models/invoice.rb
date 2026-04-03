@@ -2,7 +2,7 @@ class Invoice < ApplicationRecord
   belongs_to :company
   has_many :invoice_items, dependent: :destroy
 
-  before_save :calculate_total_ttc
+  after_save :generate_pdf, unless: :skip_pdf_generation
 
   validates :number, :issue_date, :due_date, presence: true
 
@@ -12,6 +12,8 @@ class Invoice < ApplicationRecord
 
   # Permet d'ajouter des lignes directement depuis le formulaire de la facture
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
+
+  attr_accessor :skip_pdf_generation
 
   def company_name
     company&.name
@@ -39,8 +41,8 @@ class Invoice < ApplicationRecord
 
   private
 
-  def calculate_total_ttc
-    self.total_ttc = self.total_ht * (1 + self.vat_rate / 100)
+  def generate_pdf
+    SavePdfInvoiceJob.perform_later(self) if self.editable?
   end
 
 end
