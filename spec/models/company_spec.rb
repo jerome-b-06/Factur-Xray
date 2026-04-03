@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Company, type: :model do
   let(:valid_invoice_1_attributes) {
-    { status: "pending",
+    { status: "draft",
       number: "AA-123456",
       issue_date: Date.yesterday,
       due_date: Date.yesterday + 1.month
     }
   }
   let(:valid_invoice_2_attributes) {
-    { status: "pending",
+    { status: "draft",
       number: "AA-12345678",
       issue_date: Date.yesterday,
       due_date: Date.yesterday + 1.month

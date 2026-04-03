@@ -36,7 +36,7 @@
           </div>
 
           <div class="flex gap-2">
-            <%= link_to "Éditer", edit_company_path(@company), class: "btn btn-outline rounded" %>
+            <%= link_to "Edit", edit_company_path(@company), class: "btn btn-outline rounded" %>
             <%= link_to new_company_invoice_path(@company), class: "btn btn-primary rounded" do %>
               + New Invoice
             <% end %>
@@ -71,6 +71,7 @@
             <th class="bg-transparent font-bold">DATE</th>
             <th class="bg-transparent font-bold text-right">HT</th>
             <th class="bg-transparent font-bold text-right">TTC</th>
+            <th class="bg-transparent font-bold text-center">STATUS</th>
             <th class="bg-transparent font-bold text-center">ACTIONS</th>
           </tr>
           </thead>
@@ -83,23 +84,31 @@
               <td class="text-sm">
                 <%= l invoice.issue_date %>
               </td>
-              <td class="text-right opacity-70">
+              <td class="text-left opacity-70">
                 <%= number_to_currency invoice.total_ht %>
               </td>
-              <td class="text-right font-bold text-lg">
+              <td class="text-left font-bold text-lg">
                 <%= number_to_currency invoice.total_ttc %>
               </td>
+              <td class="text-sm text-center">
+                <% badge_cls = { draft: "badge-secondary", sent: "badge-info", paid: "badge-success" }[invoice.status.to_sym] %>
+                <div class="badge badge-soft <%= badge_cls %>">
+                  <%= invoice.status %>
+                </div>
+              </td>
               <td class="flex justify-center gap-1">
-                <%= link_to company_invoice_path(@company, invoice), class: "btn btn-ghost" do %>
+                <%= link_to company_invoice_path(@company, invoice), class: "btn btn-ghost", title: "Show" do %>
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                   </svg>
                 <% end %>
-                <%= link_to edit_company_invoice_path(@company, invoice), class: "btn btn-ghost text-info" do %>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                  </svg>
+                <% if invoice.editable? %>
+                  <%= link_to edit_company_invoice_path(@company, invoice), class: "btn btn-ghost text-info", title: "Edit" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  <% end %>
                 <% end %>
 
                 <% if invoice.pdf_invoice.attached? %>

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Invoice, type: :model do
   let(:company) { Company.create!(name: "CompanyTest", siret: 321654, siren: 3216, vat_number: "FR6776578658765") }
   let(:valid_attributes) { { company: company,
-                             status: "pending",
+                             status: "draft",
                              number: "AA-123456",
                              issue_date: Date.yesterday,
                              due_date: Date.yesterday + 1.month,

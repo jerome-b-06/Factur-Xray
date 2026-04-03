@@ -40,7 +40,7 @@ RSpec.describe "Companies", type: :system do
     it "allows a user to update a company" do
       visit companies_path
       within("#company_#{company.id}") do
-        click_on "Modifier"
+        click_on "Edit"
       end
 
       fill_in "Name", with: "COMPANY1"

@@ -19,11 +19,14 @@
 
   <%= render @invoice %>
 
-  <%= link_to "Edit this invoice", edit_company_invoice_path(@company, @invoice), class: "btn btn-primary" %>
-  <%= button_to company_invoice_path(@company, @invoice),
-                method: :delete,
-                form_class: "inline-block",
-                class: "btn btn-error rounded",
-                data: { turbo_confirm: "Confirmer la suppression définitive ?" } do %>
-    Destroy this invoice
-  <% end %></div>
+  <% if @invoice.editable? %>
+    <%= link_to "Edit this invoice", edit_company_invoice_path(@company, @invoice), class: "btn btn-primary" %>
+    <%= button_to company_invoice_path(@company, @invoice),
+                  method: :delete,
+                  form_class: "inline-block",
+                  class: "btn btn-error rounded",
+                  data: { turbo_confirm: "Confirmer la suppression définitive ?" } do %>
+      Destroy this invoice
+    <% end %>
+  <% end %>
+</div>

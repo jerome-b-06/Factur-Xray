@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe InvoiceItem, type: :model do
   let(:company) { Company.create!(name: "Test Company", siret: 123456, siren: 123, vat_number: "FR123456789") }
-  let(:invoice) { Invoice.create!(company: company, status: "pending", number: "AA-123", issue_date: Date.today, due_date: Date.today + 1.month) }
+  let(:invoice) { Invoice.create!(company: company, status: "draft", number: "AA-123", issue_date: Date.today, due_date: Date.today + 1.month) }
   subject { described_class.new(invoice: invoice, description: "Test Item", quantity: 2, unit_price: 50.0, vat_rate: 10.0) }
 
   describe "associations" do

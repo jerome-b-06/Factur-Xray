@@ -37,7 +37,7 @@ RSpec.describe "Invoices", type: :system do
       expect(page).to have_content("FR0123456")
       expect(page).to have_content("INVOICE-1")
       expect(page).to have_content("")
-      expect(page).to have_content("120,00 €")
+      expect(page).to have_content("240,00 €") # TotalTTC of one invoice
       expect(page).to have_content("480,00 €") # TotalTTC of all invoices
     end
   end
@@ -58,7 +58,14 @@ RSpec.describe "Invoices", type: :system do
   end
 
   describe "Editing an invoice" do
-    let!(:invoice) { company.invoices.create!(number: "INV-OLD", total_ht: 100, vat_rate: 20, issue_date: Date.today, due_date: Date.tomorrow) }
+    let!(:invoice) { company.invoices.create!(
+      number: "INV-OLD",
+      issue_date: Date.today,
+      due_date: Date.tomorrow,
+      invoice_items_attributes: [
+        { description: "Produit_1", quantity: 1, unit_price: 10.0, vat_rate: 20.0 }
+      ]
+    ) }
 
     it "updates the TTC when HT amount is changed" do
       visit company_path(company)
@@ -66,11 +73,72 @@ RSpec.describe "Invoices", type: :system do
         click_on "Edit"
       end
 
-      fill_in "Total ht", with: 200.00
+      fill_in "invoice[invoice_items_attributes][0][unit_price]", with: 200.00
       click_on "Save"
 
       expect(page).to have_content("200,00 €")
       expect(page).to have_content("240,00 €")
+    end
+
+    it "updates the TTC when VAT rate is changed" do
+      visit company_path(company)
+      within("#invoice_#{invoice.id}") do
+        click_on "Edit"
+      end
+
+      fill_in "invoice[invoice_items_attributes][0][vat_rate]", with: 5.50
+      click_on "Save"
+
+      expect(page).to have_content("10,55 €")
+    end
+
+    it "updates the TTC when Quantity is changed" do
+      visit company_path(company)
+      within("#invoice_#{invoice.id}") do
+        click_on "Edit"
+      end
+
+      fill_in "invoice[invoice_items_attributes][0][quantity]", with: 10
+      click_on "Save"
+
+      expect(page).to have_content("100,00 €")
+      expect(page).to have_content("120,00 €")
+    end
+
+    it "updates amounts when a new item is added " do
+      driven_by(:selenium_chrome_headless)
+
+      visit company_path(company)
+      within("#invoice_#{invoice.id}") do
+        click_on "Edit"
+      end
+
+      click_on "Add a new item"
+
+      fill_in "invoice[invoice_items_attributes][1][description]", with: "Produit_2"
+      fill_in "invoice[invoice_items_attributes][1][quantity]", with: 5
+      fill_in "invoice[invoice_items_attributes][1][unit_price]", with: 50.00
+      fill_in "invoice[invoice_items_attributes][1][vat_rate]", with: 20.0
+
+      click_on "Save"
+
+      expect(page).to have_content("260,00 €")
+      expect(page).to have_content("312,00 €")
+    end
+
+    it "updates amounts when a new item is deleted " do
+      visit company_path(company)
+      within("#invoice_#{invoice.id}") do
+        click_on "Edit"
+      end
+      within("#invoice_items") do |items|
+        items.check('invoice[invoice_items_attributes][0][_destroy]')
+      end
+
+      click_on "Save"
+
+      expect(page).to have_content("0,00 €")
+      expect(page).to have_content("0,00 €")
     end
   end
 
@@ -79,9 +147,15 @@ RSpec.describe "Invoices", type: :system do
     it "removes the invoice from the list", js: true do
       driven_by(:selenium_chrome_headless)
 
-      company.invoices.create!(number: "TO-DELETE", total_ht: 100.00, vat_rate: 20, issue_date: Date.today, due_date: Date.tomorrow)
+      company.invoices.create!(number: "TO-DELETE",
+                               issue_date: Date.today,
+                               due_date: Date.tomorrow,
+                               invoice_items_attributes: [
+                                 { description: "Produit_1", quantity: 1, unit_price: 100.0, vat_rate: 20.0 },
+                                 { description: "Produit_2", quantity: 10, unit_price: 10.0, vat_rate: 20.0 }
+                               ])
       visit company_path(company)
-      click_on "Voir"
+      click_on "Show"
 
       accept_confirm do
         click_on "Destroy this invoice"

@@ -14,6 +14,7 @@ class InvoicesController < ApplicationController
 
   # GET /invoices/1/edit
   def edit
+    redirect_to company_invoice_path(@company, @invoice) unless @invoice.editable?
   end
 
   # POST /invoices or /invoices.json

@@ -13,22 +13,26 @@
 
   <div class="my-5">
     <%= form.label :status %>
-    <%= form.text_field :status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:status].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:status].any? }] %>
+    <%= form.select :status,
+                    options_for_select(Invoice.statuses.map { |k, v| [v, k] }, @invoice.status),
+                    {},
+                    class: ["select", { "select-primary": @invoice.errors[:status].none?, "select-error": @invoice.errors[:status].any? }]
+    %>
   </div>
 
   <div class="my-5">
     <%= form.label :number %>
-    <%= form.text_field :number, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:number].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:number].any? }] %>
+    <%= form.text_field :number, class: ["input", { "input-primary": @invoice.errors[:number].none?, "input-error": @invoice.errors[:number].any? }] %>
   </div>
 
   <div class="my-5">
     <%= form.label :issue_date %>
-    <%= form.date_field :issue_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:issue_date].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:issue_date].any? }] %>
+    <%= form.date_field :issue_date, class: ["input", { "input-primary": @invoice.errors[:issue_date].none?, "input-error": @invoice.errors[:issue_date].any? }] %>
   </div>
 
   <div class="my-5">
     <%= form.label :due_date %>
-    <%= form.date_field :due_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", { "border-gray-400 focus:outline-blue-600": @invoice.errors[:due_date].none?, "border-red-400 focus:outline-red-600": @invoice.errors[:due_date].any? }] %>
+    <%= form.date_field :due_date, class: ["input", { "input-primary": @invoice.errors[:due_date].none?, "input-error": @invoice.errors[:due_date].any? }] %>
   </div>
 
   <h2>Items</h2>

@@ -6,7 +6,7 @@ class Invoice < ApplicationRecord
 
   validates :number, :issue_date, :due_date, presence: true
 
-  enum :status, { pending: "pending", processed: "processed", error: "error" }, validate: true
+  enum :status, { draft: "draft", sent: "sent", paid: "paid" }, validate: true
 
   has_one_attached :pdf_invoice
 
@@ -31,6 +31,10 @@ class Invoice < ApplicationRecord
 
   def total_ttc
     total_ht + total_vat
+  end
+
+  def editable?
+    draft?
   end
 
   private
