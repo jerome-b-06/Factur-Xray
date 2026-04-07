@@ -36,8 +36,8 @@ module FacturXray
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    #  config.i18n.load_path += Dir[Rails.root.join("my", "locales", "*.{rb,yml}")]
-    config.i18n.default_locale = 'fr-FR'
+    #   config.i18n.load_path += Dir[Rails.root.join("my", "locales", "*.{rb,yml}")]
+    config.i18n.default_locale = "fr-FR"
 
     config.generators do |g|
       # 1. RSpec confuguration :
@@ -51,6 +51,5 @@ module FacturXray
       g.stylesheets false
       g.helper false
     end
-
   end
 end

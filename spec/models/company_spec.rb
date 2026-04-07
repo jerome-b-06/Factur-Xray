@@ -61,6 +61,5 @@ RSpec.describe Company, type: :model do
       subject.vat_number = nil
       expect(subject).not_to be_valid
     end
-
   end
 end

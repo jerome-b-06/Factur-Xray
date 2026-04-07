@@ -19,7 +19,6 @@ RSpec.describe SavePdfInvoiceJob, type: :job do
   ) }
 
   describe "#perform" do
-
     it "Attach pdf file to invoice" do
       expect {
         described_class.perform_now(invoice)
@@ -43,5 +42,4 @@ RSpec.describe SavePdfInvoiceJob, type: :job do
       expect(page_text).to include("Unknown field (other_field)")
     end
   end
-
 end

@@ -48,4 +48,3 @@ Company.destroy_all
 
   company.invoices.create!(invoices_sample)
 end
-

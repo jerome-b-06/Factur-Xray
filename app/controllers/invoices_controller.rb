@@ -52,7 +52,6 @@ class InvoicesController < ApplicationController
   end
 
   def download
-
   end
 
   private
