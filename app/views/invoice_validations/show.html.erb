@@ -1,0 +1,159 @@
+<% data = @invoice_validation.extracted_data || {} %>
+<% seller = data["seller"] || {} %>
+<% buyer = data["buyer"] || {} %>
+<% totals = data["totals"] || {} %>
+<% vat_breakdown = data["vat_breakdown"] || [] %>
+<% line_items = data["line_items"] || [] %>
+
+<div class="max-w-6xl mx-auto my-10 space-y-8">
+
+  <div class="flex justify-between items-center">
+    <h1 class="text-3xl font-bold">Validation Report</h1>
+    <%= link_to "Validate Another File", new_invoice_validation_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="alert <%= @invoice_validation.valid_invoice? ? 'alert-success' : 'alert-error' %> shadow-lg">
+    <div>
+      <% if @invoice_validation.valid_invoice? %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span><strong class="text-lg">Valid Factur-X Invoice</strong> - XML Data successfully extracted and verified.</span>
+      <% else %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span><strong class="text-lg">Validation Failed</strong> - Review the errors below.</span>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @invoice_validation.error_messages.any? %>
+    <div class="card bg-error text-error-content shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Issues Detected:</h2>
+        <ul class="list-disc pl-5">
+          <% @invoice_validation.error_messages.each do |error| %>
+            <li><%= error %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="stats shadow w-full">
+    <div class="stat place-items-center">
+      <div class="stat-title">Invoice Number</div>
+      <div class="stat-value text-base-content"><%= @invoice_validation.invoice_number.presence || "N/A" %></div>
+    </div>
+    <div class="stat place-items-center">
+      <div class="stat-title">Total Excl. VAT</div>
+      <div class="stat-value"><%= number_to_currency(totals["total_ht"], unit: "€", format: "%n %u") %></div>
+    </div>
+    <div class="stat place-items-center">
+      <div class="stat-title">Total VAT</div>
+      <div class="stat-value text-secondary"><%= number_to_currency(totals["total_vat"], unit: "€", format: "%n %u") %></div>
+    </div>
+    <div class="stat place-items-center">
+      <div class="stat-title">Grand Total (TTC)</div>
+      <div class="stat-value text-primary"><%= number_to_currency(totals["total_ttc"], unit: "€", format: "%n %u") %></div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+      <div class="card-body">
+        <h2 class="card-title text-primary border-b pb-2">Seller Details</h2>
+        <p class="text-xl font-bold mt-2"><%= seller["name"] %></p>
+        <p><%= seller["address"] %><br><%= seller["zip"] %> <%= seller["city"] %>, <%= seller["country"] %></p>
+
+        <div class="flex gap-2 mt-4 flex-wrap">
+          <% if seller["siret"].present? %>
+            <div class="badge badge-outline">SIRET: <%= seller["siret"] %></div>
+          <% end %>
+          <% if seller["vat_number"].present? %>
+            <div class="badge badge-outline badge-info">VAT: <%= seller["vat_number"] %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+      <div class="card-body">
+        <h2 class="card-title text-secondary border-b pb-2">Buyer Details</h2>
+        <p class="text-xl font-bold mt-2"><%= buyer["name"] %></p>
+        <p><%= buyer["address"] %><br><%= buyer["zip"] %> <%= buyer["city"] %>, <%= buyer["country"] %></p>
+
+        <div class="flex gap-2 mt-4 flex-wrap">
+          <% if buyer["siret"].present? %>
+            <div class="badge badge-outline">SIRET: <%= buyer["siret"] %></div>
+          <% end %>
+          <% if buyer["vat_number"].present? %>
+            <div class="badge badge-outline badge-info">VAT: <%= buyer["vat_number"] %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if vat_breakdown.any? %>
+    <div class="card bg-base-100 shadow-xl overflow-hidden">
+      <div class="card-body p-0">
+        <h2 class="font-bold text-lg p-6 pb-2">VAT Breakdown</h2>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead class="bg-base-200">
+            <tr>
+              <th>Category</th>
+              <th>Rate (%)</th>
+              <th>Base Amount</th>
+              <th>VAT Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% vat_breakdown.each do |tax| %>
+              <tr>
+                <td><div class="badge badge-ghost"><%= tax["category"] %></div></td>
+                <td class="font-bold"><%= tax["rate"] %>%</td>
+                <td><%= number_to_currency(tax["basis_amount"], unit: "€", format: "%n %u") %></td>
+                <td><%= number_to_currency(tax["calculated_amount"], unit: "€", format: "%n %u") %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <% if line_items.any? %>
+    <div class="card bg-base-100 shadow-xl overflow-hidden">
+      <div class="card-body p-0">
+        <h2 class="font-bold text-lg p-6 pb-2">Invoice Line Items</h2>
+        <div class="overflow-x-auto">
+          <table class="table w-full">
+            <thead class="bg-base-200">
+            <tr>
+              <th>Item #</th>
+              <th>Description</th>
+              <th class="text-right">Qty</th>
+              <th class="text-right">Unit Price</th>
+              <th class="text-right">VAT Rate</th>
+              <th class="text-right">Total Excl. VAT</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% line_items.each do |item| %>
+              <tr class="hover">
+                <td><%= item["line_id"] %></td>
+                <td><%= item["description"] %></td>
+                <td class="text-right"><%= item["quantity"] %></td>
+                <td class="text-right"><%= number_to_currency(item["unit_price"], unit: "€", format: "%n %u") %></td>
+                <td class="text-right"><%= item["vat_rate"] %>%</td>
+                <td class="text-right font-bold"><%= number_to_currency(item["line_total"], unit: "€", format: "%n %u") %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+</div>

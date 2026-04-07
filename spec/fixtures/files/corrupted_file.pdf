@@ -1,0 +1,3 @@
+Not a real PDF file,
+just some random text to simulate a corrupted file...
+This should trigger the error handling in the PDF processing code when it tries to read this file as a PDF.

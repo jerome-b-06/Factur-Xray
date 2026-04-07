@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :invoice_validations, only: [:index, :new, :create, :show, :destroy]
 
   devise_for :users
   resources :companies do

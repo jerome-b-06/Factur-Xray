@@ -1,0 +1,37 @@
+<div class="hero min-h-[60vh] bg-base-200 rounded-box">
+  <div class="hero-content flex-col lg:flex-row-reverse w-full max-w-4xl">
+    <div class="text-center lg:text-left ml-0 lg:ml-8">
+      <h1 class="text-5xl font-bold">Validate your Invoice!</h1>
+      <p class="py-6">
+        Upload your PDF file to check its Factur-X / ZUGFeRD compliance.
+        Our system will extract all embedded XML data and verify the business rules instantly.
+      </p>
+    </div>
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+      <div class="card-body">
+        <%= form_with(model: @invoice_validation, class: "flex flex-col gap-4") do |f| %>
+
+          <% if @invoice_validation.errors.any? %>
+            <div class="alert alert-error shadow-lg">
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span><%= @invoice_validation.errors.full_messages.to_sentence %></span>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-semibold">Select PDF Document</span>
+            </label>
+            <%= f.file_field :file, accept: "application/pdf", class: "file-input file-input-bordered file-input-primary w-full" %>
+          </div>
+
+          <div class="form-control mt-6">
+            <%= f.submit "Extract & Validate", class: "btn btn-primary cursor-pointer" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
