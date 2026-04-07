@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :invoice_items
 
   devise_for :users
   resources :companies do
