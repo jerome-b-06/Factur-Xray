@@ -70,5 +70,4 @@ RSpec.describe "Companies", type: :system do
       expect(page).not_to have_content("CompanyTest")
     end
   end
-
 end

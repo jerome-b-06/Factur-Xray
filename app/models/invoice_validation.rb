@@ -6,5 +6,4 @@ class InvoiceValidation < ApplicationRecord
   def valid_invoice?
     status === "valid"
   end
-
 end

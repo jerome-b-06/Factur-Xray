@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'builder'
+require "builder"
 class XmlInvoiceGenerator
-
   def initialize(invoice)
     @invoice = invoice
   end
@@ -17,7 +16,6 @@ class XmlInvoiceGenerator
              "xmlns:ram" => "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100",
              "xmlns:udt" => "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
     ) do
-
       # ---------------------------------------------------------
       # 1. ENTÊTE DU DOCUMENT (ExchangedDocument)
       # ---------------------------------------------------------
@@ -35,7 +33,6 @@ class XmlInvoiceGenerator
       # 2. DONNÉES DE LA TRANSACTION (SupplyChainTradeTransaction)
       # ---------------------------------------------------------
       xml.tag!("rsm:SupplyChainTradeTransaction") do
-
         # Vendeur et Acheteur
         xml.tag!("ram:ApplicableHeaderTradeAgreement") do
           xml.tag!("ram:SellerTradeParty") do
@@ -79,7 +76,6 @@ class XmlInvoiceGenerator
       # -- LIGNES DE FACTURE (IncludedSupplyChainTradeLineItem) --
       @invoice.invoice_items.each_with_index do |item, index|
         xml.tag!("ram:IncludedSupplyChainTradeLineItem") do
-
           # ID de la ligne (1, 2, 3...)
           xml.tag!("ram:AssociatedDocumentLineDocument") do
             xml.tag!("ram:LineID", index + 1)
@@ -93,7 +89,7 @@ class XmlInvoiceGenerator
           # Prix unitaire HT
           xml.tag!("ram:SpecifiedLineTradeAgreement") do
             xml.tag!("ram:NetPriceProductTradePrice") do
-              xml.tag!("ram:ChargeAmount", format('%.2f', item.unit_price))
+              xml.tag!("ram:ChargeAmount", format("%.2f", item.unit_price))
             end
           end
 
@@ -107,10 +103,10 @@ class XmlInvoiceGenerator
             xml.tag!("ram:ApplicableTradeTax") do
               xml.tag!("ram:TypeCode", "VAT")
               xml.tag!("ram:CategoryCode", "S") # S = Standard rate
-              xml.tag!("ram:RateApplicablePercent", format('%.2f', item.vat_rate))
+              xml.tag!("ram:RateApplicablePercent", format("%.2f", item.vat_rate))
             end
             xml.tag!("ram:SpecifiedTradeSettlementLineMonetarySummation") do
-              xml.tag!("ram:LineTotalAmount", format('%.2f', item.total_ht))
+              xml.tag!("ram:LineTotalAmount", format("%.2f", item.total_ht))
             end
           end
         end
@@ -134,23 +130,22 @@ class XmlInvoiceGenerator
           tax_amount = items.sum(&:total_vat)
 
           xml.tag!("ram:ApplicableTradeTax") do
-            xml.tag!("ram:CalculatedAmount", format('%.2f', tax_amount))
+            xml.tag!("ram:CalculatedAmount", format("%.2f", tax_amount))
             xml.tag!("ram:TypeCode", "VAT")
-            xml.tag!("ram:BasisAmount", format('%.2f', base_amount))
+            xml.tag!("ram:BasisAmount", format("%.2f", base_amount))
             xml.tag!("ram:CategoryCode", "S") # S = Standard, à adapter si auto-liquidation (AE) ou de l'exonération (E)
-            xml.tag!("ram:RateApplicablePercent", format('%.2f', rate))
+            xml.tag!("ram:RateApplicablePercent", format("%.2f", rate))
           end
         end
 
         # Totaux Finaux (MonetarySummation)
         xml.tag!("ram:SpecifiedTradeSettlementHeaderMonetarySummation") do
-          xml.tag!("ram:LineTotalAmount", format('%.2f', @invoice.total_ht)) # Somme des lignes
-          xml.tag!("ram:TaxBasisTotalAmount", format('%.2f', @invoice.total_ht)) # Base taxable
-          xml.tag!("ram:TaxTotalAmount", format('%.2f', @invoice.total_vat), currencyID: "EUR")
-          xml.tag!("ram:GrandTotalAmount", format('%.2f', @invoice.total_ttc)) # TTC final
-          xml.tag!("ram:DuePayableAmount", format('%.2f', @invoice.total_ttc)) # Reste à payer
+          xml.tag!("ram:LineTotalAmount", format("%.2f", @invoice.total_ht)) # Somme des lignes
+          xml.tag!("ram:TaxBasisTotalAmount", format("%.2f", @invoice.total_ht)) # Base taxable
+          xml.tag!("ram:TaxTotalAmount", format("%.2f", @invoice.total_vat), currencyID: "EUR")
+          xml.tag!("ram:GrandTotalAmount", format("%.2f", @invoice.total_ttc)) # TTC final
+          xml.tag!("ram:DuePayableAmount", format("%.2f", @invoice.total_ttc)) # Reste à payer
         end
-
       end
     end
   end

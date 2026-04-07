@@ -12,5 +12,4 @@ class InvoiceItem < ApplicationRecord
     self.total_vat = total_ht * (vat_rate / 100)
     self.total_ttc = total_ht + total_vat
   end
-
 end

@@ -30,7 +30,6 @@ class CompaniesController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
-
   end
 
   # PATCH/PUT /companies/1 or /companies/1.json

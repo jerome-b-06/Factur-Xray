@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class PdfGenerator
-
   def initialize(html_content)
     @html_content = html_content
   end

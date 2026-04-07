@@ -1,5 +1,5 @@
-require 'hexapdf'
-require 'nokogiri'
+require "hexapdf"
+require "nokogiri"
 
 class InvoiceValidatorService
   def initialize(invoice_validation)
@@ -15,7 +15,7 @@ class InvoiceValidatorService
       # 1. On cherche dans doc.files un fichier dont le nom contient "factur-x.xml" ou "zugferd"
       matched_file = doc.files.find do |filespec|
         name = filespec.path().downcase
-        name.include?('factur-x.xml') || name.include?('zugferd')
+        name.include?("factur-x.xml") || name.include?("zugferd")
       end
 
       if matched_file.nil?

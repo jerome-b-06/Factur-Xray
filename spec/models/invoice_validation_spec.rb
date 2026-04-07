@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe InvoiceValidation, type: :model do
-
   describe 'validations' do
     it 'is invalid without a file attached' do
       validation = InvoiceValidation.new
@@ -31,5 +30,4 @@ RSpec.describe InvoiceValidation, type: :model do
       expect(InvoiceValidation.new(status: nil).valid_invoice?).to be false
     end
   end
-
 end

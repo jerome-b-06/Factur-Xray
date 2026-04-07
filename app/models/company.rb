@@ -12,5 +12,4 @@ class Company < ApplicationRecord
   def invoices_count
     self.invoices.count
   end
-
 end

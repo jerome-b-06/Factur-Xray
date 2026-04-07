@@ -44,5 +44,4 @@ class Invoice < ApplicationRecord
   def generate_pdf
     SavePdfInvoiceJob.perform_later(self) if self.editable?
   end
-
 end

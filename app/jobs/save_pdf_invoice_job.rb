@@ -14,8 +14,8 @@ class SavePdfInvoiceJob < ApplicationJob
     # Le nom "factur-x.xml" est standardisé et attendu par les logiciels comptables
     doc.files.add(
       StringIO.new(xml_data),
-      name: 'factur-x.xml',
-      description: 'Factur-X XML Invoice'
+      name: "factur-x.xml",
+      description: "Factur-X XML Invoice"
     )
 
     final_pdf_io = StringIO.new
@@ -48,7 +48,7 @@ class SavePdfInvoiceJob < ApplicationJob
     final_content = raw_content.gsub(regex) do |match|
       field_name = $1
 
-      if field_name === 'list_of_invoiced_items'
+      if field_name === "list_of_invoiced_items"
         "<table style='width: 100%; border-collapse: collapse;'>" +
           "<thead>" +
           "<tr>" +
@@ -94,5 +94,4 @@ class SavePdfInvoiceJob < ApplicationJob
       value.to_s
     end
   end
-
 end
