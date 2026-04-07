@@ -35,6 +35,7 @@ Company.destroy_all
     due_date = issue_date + 30.days
     {
       number: SecureRandom.uuid,
+      status: 'draft',
       issue_date: issue_date,
       due_date: due_date,
       invoice_items_attributes: [
