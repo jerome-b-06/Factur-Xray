@@ -8,7 +8,7 @@ class PdfGenerator
 
   def generate
     browser = Ferrum::Browser.new(
-      browser_options: { "no-sandbox": nil, "disable-setuid-sandbox": nil },
+      browser_options: { "no-sandbox": nil, "disable-setuid-sandbox": nil, "disable-dev-shm-usage": nil },
       timeout: 30
     )
 
