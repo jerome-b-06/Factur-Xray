@@ -9,7 +9,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1 or /companies/1.json
   def show
-    @invoices = @company.invoices.includes(:invoice_items).order(created_at: :desc)
+    @invoices = @company.invoices.with_attached_pdf_invoice.includes(:invoice_items).order(created_at: :desc)
   end
 
   # GET /companies/new
