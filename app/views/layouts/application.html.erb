@@ -55,6 +55,9 @@
           Check an invoice validity
         <% end %>
       </li>
+      <li class="mt-auto">
+        <%= button_to "Logout", destroy_user_session_path, method: :delete, form_class: "inline-block", data: { turbo: false }, class: "btn btn-outline btn-warning btn-block" %>
+      </li>
     </ul>
   </div>
 </div>
