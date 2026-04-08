@@ -92,23 +92,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 1. On installe TOUT le nécessaire système d'abord
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y build-essential libpq-dev libvips libyaml-dev chromium-browser chromium-chromedriver
+          sudo apt-get install -y build-essential libpq-dev libyaml-dev libvips chromium-browser
 
+      # 2. On configure Ruby (SANS le cache automatique pour débugger)
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.4.9'
-          bundler-cache: false
+          bundler-cache: false # On le met à false pour forcer l'installation manuelle
 
+      # 3. On installe les gems manuellement pour voir l'erreur s'il y en a une
+      - name: Bundle install
+        run: |
+          gem install bundler
+          bundle config set --local path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
+
+      # 4. On prépare la DB avec bundle exec
       - name: Setup Database
         env:
           DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
           RAILS_ENV: test
-        run: bin/rails db:prepare
+        run: bundle exec rails db:prepare
 
+      # 5. On lance les tests
       - name: Run Tests
         env:
           DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
