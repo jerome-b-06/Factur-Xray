@@ -1,3 +1,5 @@
+[![CI](https://github.com/jerome-b-06/Factur-Xray/actions/workflows/ci.yml/badge.svg)](https://github.com/jerome-b-06/Factur-Xray/actions/workflows/ci.yml)
+[![Dependabot Updates](https://github.com/jerome-b-06/Factur-Xray/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/jerome-b-06/Factur-Xray/actions/workflows/dependabot/dependabot-updates)
 # Electronic Invoicing (Factur-X / ZUGFeRD) - Advanced POC
 
 This project is an advanced Proof of Concept (POC) built with Ruby on Rails. It demonstrates the complete lifecycle of European standard electronic invoicing (Factur-X / ZUGFeRD EN 16931).
