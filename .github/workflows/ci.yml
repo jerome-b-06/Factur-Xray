@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
+  # --- JOB 1: Sécurité Ruby ---
   scan_ruby:
     runs-on: ubuntu-latest
     steps:
@@ -19,14 +20,15 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: false
+          ruby-version: '3.4.9'
+          bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+      - name: Scan for Ruby vulnerabilities
+        run: |
+          bin/brakeman --no-pager
+          bin/bundler-audit --update
 
-      - name: Scan for known security vulnerabilities in gems used
-        run: bin/bundler-audit
-
+  # --- JOB 2: Sécurité JS ---
   scan_js:
     runs-on: ubuntu-latest
     steps:
@@ -39,15 +41,15 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: false
+          ruby-version: '3.4.9'
+          bundler-cache: true
 
-      - name: Scan for security vulnerabilities in JavaScript dependencies
+      - name: Scan for JS vulnerabilities
         run: bin/importmap audit
 
+  # --- JOB 3: Style du code (Lint) ---
   lint:
     runs-on: ubuntu-latest
-    env:
-      RUBOCOP_CACHE_ROOT: tmp/rubocop
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -58,21 +60,13 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: false
-
-      - name: Prepare RuboCop cache
-        uses: actions/cache@v4
-        env:
-          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
-        with:
-          path: ${{ env.RUBOCOP_CACHE_ROOT }}
-          key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
-          restore-keys: |
-            rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-
+          ruby-version: '3.4.9'
+          bundler-cache: true
 
       - name: Lint code for consistent style
-        run: bin/rubocop -f github
+        run: bundle exec rubocop -f github
 
+  # --- JOB 4: Tests Unitaires et Système (RSpec) ---
   test:
     runs-on: ubuntu-latest
     services:
@@ -92,34 +86,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. On installe TOUT le nécessaire système d'abord
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y build-essential libpq-dev libyaml-dev libvips chromium-browser
+          sudo apt-get install -y build-essential libpq-dev libvips libyaml-dev chromium-browser
 
-      # 2. On configure Ruby (SANS le cache automatique pour débugger)
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.4.9'
-          bundler-cache: false # On le met à false pour forcer l'installation manuelle
+          bundler-cache: true
 
-      # 3. On installe les gems manuellement pour voir l'erreur s'il y en a une
-      - name: Bundle install
-        run: |
-          gem install bundler
-          bundle config set --local path 'vendor/bundle'
-          bundle install --jobs 4 --retry 3
-
-      # 4. On prépare la DB avec bundle exec
       - name: Setup Database
         env:
           DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
           RAILS_ENV: test
         run: bundle exec rails db:prepare
 
-      # 5. On lance les tests
       - name: Run Tests
         env:
           DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
